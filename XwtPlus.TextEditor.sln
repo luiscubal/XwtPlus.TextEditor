@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.WPF", "Third-Party\xwt\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt", "Third-Party\xwt\Xwt\Xwt.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XwtPlus.TextEditor.Test", "XwtPlus.TextEditor.Test\XwtPlus.TextEditor.Test.csproj", "{EFE4BF26-4338-4CA0-AD64-B48865E2750B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,14 @@ Global
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.net_4_5_Release|Any CPU.Build.0 = Release|Any CPU
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.net_4_5_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.net_4_5_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.net_4_5_Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.net_4_5_Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE4BF26-4338-4CA0-AD64-B48865E2750B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
