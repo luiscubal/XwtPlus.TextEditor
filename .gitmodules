@@ -1,0 +1,6 @@
+[submodule "Third-Party/NRefactory"]
+	path = Third-Party/NRefactory
+	url = git@github.com:icsharpcode/NRefactory.git
+[submodule "Third-Party/xwt"]
+	path = Third-Party/xwt
+	url = git@github.com:luiscubal/xwt

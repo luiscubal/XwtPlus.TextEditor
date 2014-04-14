@@ -1,0 +1,4 @@
+*.suo
+*.ide/
+obj/
+bin/
