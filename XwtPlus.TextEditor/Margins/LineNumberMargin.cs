@@ -82,10 +82,11 @@ namespace XwtPlus.TextEditor.Margins
                         layout.Font = layout.Font.WithWeight(FontWeight.Bold);
                     }
                     layout.Text = lineNumber.ToString();
-                    cr.SetColor(Colors.Black);
 
                     layoutDict[lineNumber] = layout;
                 }
+
+                cr.SetColor(Colors.Black);
                 cr.DrawTextLayout(layout, x + leftPadding + (lineNumber == editor.Caret.Line ? currentLineIndent : 0), y);
             }
         }
