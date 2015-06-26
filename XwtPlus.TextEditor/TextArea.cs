@@ -26,7 +26,6 @@ namespace XwtPlus.TextEditor
 
             textViewMargin = new TextViewMargin(editor);
 
-            margins.Add(new PaddingMargin(StartOffset));
             margins.Add(new LineNumberMargin(editor));
             margins.Add(new PaddingMargin(5));
             margins.Add(textViewMargin);
