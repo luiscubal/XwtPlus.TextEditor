@@ -13,6 +13,8 @@ namespace XwtPlus.TextEditor
     {
         const int StartOffset = 4;
 
+        Menu contextMenu;
+        MenuItem cutMenuItem, copyMenuItem, pasteMenuItem;
         TextEditor editor;
 
         List<Margin> margins = new List<Margin>();
@@ -29,6 +31,20 @@ namespace XwtPlus.TextEditor
             margins.Add(new LineNumberMargin(editor));
             margins.Add(new PaddingMargin(5));
             margins.Add(textViewMargin);
+
+            contextMenu = new Menu();
+
+            cutMenuItem = new MenuItem("Cut");
+            cutMenuItem.Clicked += (sender, e) => Cut();
+            contextMenu.Items.Add(cutMenuItem);
+
+            copyMenuItem = new MenuItem("Copy");
+            copyMenuItem.Clicked += (sender, e) => Copy();
+            contextMenu.Items.Add(copyMenuItem);
+
+            pasteMenuItem = new MenuItem("Paste");
+            pasteMenuItem.Clicked += (sender, e) => Paste();
+            contextMenu.Items.Add(pasteMenuItem);
         }
 
         public double ComputedWidth
@@ -158,9 +174,62 @@ namespace XwtPlus.TextEditor
             editor.SetFocus();
         }
 
+        private void Cut()
+        {
+            Copy();
+            editor.Document.Remove(editor.Selection);
+            Deselect();
+        }
+
+        private void Copy()
+        {
+            Clipboard.SetText(editor.Document.GetTextAt(editor.Selection.GetRegion(editor.Document)));
+        }
+
+        private void Paste()
+        {
+            InsertText(Clipboard.GetText());
+        }
+
+        internal void HandleButtonPressed(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Right)
+            {
+                cutMenuItem.Sensitive = !editor.Selection.IsEmpty;
+                copyMenuItem.Sensitive = !editor.Selection.IsEmpty;
+                pasteMenuItem.Sensitive = !string.IsNullOrEmpty(Clipboard.GetText());
+
+                contextMenu.Popup();
+            }
+        }
+
         internal void HandleKeyPressed(object sender, KeyEventArgs e)
         {
             e.Handled = true;
+
+            if (e.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                switch (e.Key)
+                {
+                    case Key.x:
+                    case Key.X:
+                        if(!editor.Selection.IsEmpty)
+                            Cut();
+                        break;
+                    case Key.c:
+                    case Key.C:
+
+                        if(!editor.Selection.IsEmpty)
+                            Copy();
+                        break;
+                    case Key.v:
+                    case Key.V:
+                        if(!string.IsNullOrEmpty(Clipboard.GetText()))
+                            Paste();
+                        break;
+                }
+            }
+
             switch (e.Key)
             {
                 case Key.Home:

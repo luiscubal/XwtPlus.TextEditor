@@ -121,6 +121,7 @@ namespace XwtPlus.TextEditor
                 QueueDraw();
             };
 
+            ButtonPressed += textArea.HandleButtonPressed;
             KeyPressed += textArea.HandleKeyPressed;
             TextInput += textArea.HandleTextInput;
         }
