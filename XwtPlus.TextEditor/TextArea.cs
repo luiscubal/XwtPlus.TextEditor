@@ -230,6 +230,30 @@ namespace XwtPlus.TextEditor
                         QueueDraw();
                         break;
                     }
+                case Key.BackSpace:
+                    {
+                        if (editor.Selection.IsEmpty)
+                        {
+                            editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location) - 1, 1);
+
+                            if (editor.Caret.Column == 1)
+                            {
+                                var line = editor.Document.GetLine(editor.Caret.Line - 1);
+                                editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
+                            }
+                            else
+                            {
+                                editor.Caret.Column--;
+                            }
+                        }
+                        else
+                        {
+                            editor.Document.Remove(editor.Selection);
+                            Deselect();
+                        }
+                        QueueDraw();
+                        break;
+                    }
                 case Key.Tab:
                     InsertText("\t");
                     break;
