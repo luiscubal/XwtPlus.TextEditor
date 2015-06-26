@@ -29,7 +29,7 @@ namespace XwtPlus.TextEditor.Margins
                 if (cachedLineCount != editor.Document.LineCount)
                 {
                     cachedLineCount = editor.Document.LineCount;
-                    int lineDigits = (int)Math.Log10(editor.Document.LineCount) + 1;
+                    int lineDigits = (int)Math.Log10(editor.Document.LineCount);
                     string lineText = new string('0', lineDigits);
 
                     TextLayout layout = new TextLayout();
@@ -77,17 +77,13 @@ namespace XwtPlus.TextEditor.Margins
                 {
                     layout = new TextLayout();
                     layout.Font = editor.Options.EditorFont;
-                    if (editor.Options.CurrentLineNumberBold && lineNumber == editor.Caret.Line)
-                    {
-                        layout.Font = layout.Font.WithWeight(FontWeight.Bold);
-                    }
                     layout.Text = lineNumber.ToString();
 
                     layoutDict[lineNumber] = layout;
                 }
 
                 cr.SetColor(Colors.Black);
-                cr.DrawTextLayout(layout, x + leftPadding + (lineNumber == editor.Caret.Line ? currentLineIndent : 0), y);
+                cr.DrawTextLayout(layout, x + leftPadding, y);
             }
         }
     }
