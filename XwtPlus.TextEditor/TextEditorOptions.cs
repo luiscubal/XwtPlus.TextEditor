@@ -10,7 +10,7 @@ namespace XwtPlus.TextEditor
 {
     public class TextEditorOptions
     {
-        public Font EditorFont = Font.FromName("Consolas 13");
+        public Font EditorFont = Font.SystemMonospaceFont;
         public IndentStyle IndentStyle = IndentStyle.Auto;
         public int TabSize = 4;
         public Color Background = Colors.White;
