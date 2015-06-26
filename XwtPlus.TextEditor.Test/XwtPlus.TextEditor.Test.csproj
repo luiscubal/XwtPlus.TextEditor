@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,9 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,6 +39,19 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Xwt.Gtk3">
+      <HintPath>..\Third-Party\Linux\Xwt.Gtk3.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>..\Third-Party\Linux\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.Gtk">
+      <HintPath>..\Third-Party\Linux\Xwt.Gtk.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49">
+      <Package>monodevelop</Package>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -50,20 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Third-Party\xwt\Xwt.WPF\Xwt.WPF.csproj">
-      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
-      <Name>Xwt.WPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Third-Party\xwt\Xwt\Xwt.csproj">
-      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XwtPlus.TextEditor\XwtPlus.TextEditor.csproj">
-      <Project>{fa8374b9-9e2a-40ce-9291-640419e64301}</Project>
-      <Name>XwtPlus.TextEditor</Name>
-    </ProjectReference>
+    <None Include="..\Third-Party\Linux\Xwt.Gtk.dll.config">
+      <Link>Xwt.Gtk.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Third-Party\Linux\Xwt.Gtk3.dll.config">
+      <Link>Xwt.Gtk3.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -73,4 +77,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\XwtPlus.TextEditor\XwtPlus.TextEditor.csproj">
+      <Project>{FA8374B9-9E2A-40CE-9291-640419E64301}</Project>
+      <Name>XwtPlus.TextEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ namespace XwtPlus.TextEditor.Test
 		[STAThread]
 		static void Main(string[] args)
 		{
-			Application.Initialize(ToolkitType.Wpf);
+            Application.Initialize(ToolkitType.Gtk3);
 
 			using (var window = new MainWindow())
 			{

@@ -250,9 +250,9 @@ namespace XwtPlus.TextEditor
             editor.Selection = new TextSegment();
         }
 
-        internal void HandlePreviewTextInput(object sender, PreviewTextInputEventArgs args)
+        internal void HandleTextInput(object sender, TextInputEventArgs args)
         {
-            base.OnPreviewTextInput(args);
+            base.OnTextInput(args);
 
             InsertText(args.Text);
 

@@ -122,7 +122,7 @@ namespace XwtPlus.TextEditor
             };
 
             KeyPressed += textArea.HandleKeyPressed;
-            PreviewTextInput += textArea.HandlePreviewTextInput;
+            TextInput += textArea.HandleTextInput;
         }
 
         public bool CaretVisible
