@@ -435,7 +435,7 @@ namespace XwtPlus.TextEditor
         {
             base.OnMouseMoved(args);
 
-            if (args.X >= textViewMargin.XOffset)
+            if (args.X >= lineNumberMargin.Width)
                 this.Cursor = CursorType.IBeam;
             else
                 this.Cursor = CursorType.Arrow;
@@ -455,9 +455,7 @@ namespace XwtPlus.TextEditor
         void NotifyTrackers(double x, double y)
         {
             foreach (var mouseMotionTracker in mouseMotionTrackers)
-            {
-                mouseMotionTracker.Item2(x, y);
-            }
+                mouseMotionTracker.Item2(Math.Max((int)x, textViewMargin.XOffset), Math.Max((int)y, 0));
         }
     }
 }
