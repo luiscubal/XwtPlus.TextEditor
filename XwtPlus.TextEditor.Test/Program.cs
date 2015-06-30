@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 
 namespace XwtPlus.TextEditor.Test
@@ -12,7 +8,7 @@ namespace XwtPlus.TextEditor.Test
 		[STAThread]
 		static void Main(string[] args)
 		{
-            Application.Initialize(ToolkitType.Gtk3);
+            Application.Initialize(ToolkitType.Gtk);
 
 			using (var window = new MainWindow())
 			{

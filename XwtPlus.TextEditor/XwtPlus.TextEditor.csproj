@@ -43,7 +43,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xwt">
-      <HintPath>..\Third-Party\Linux\Xwt.dll</HintPath>
+      <HintPath>..\Third-Party\Xwt.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
