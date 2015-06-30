@@ -18,6 +18,8 @@ namespace XwtPlus.TextEditor
         TextEditor editor;
 
         List<Margin> margins = new List<Margin>();
+        LineNumberMargin lineNumberMargin;
+        PaddingMargin paddingMargin;
         TextViewMargin textViewMargin;
 
         public TextArea(TextEditor editor)
@@ -26,10 +28,12 @@ namespace XwtPlus.TextEditor
 
             CanGetFocus = true;
 
+            lineNumberMargin = new LineNumberMargin(editor);
+            paddingMargin = new PaddingMargin(5);
             textViewMargin = new TextViewMargin(editor);
 
-            margins.Add(new LineNumberMargin(editor));
-            margins.Add(new PaddingMargin(5));
+            margins.Add(lineNumberMargin);
+            margins.Add(paddingMargin);
             margins.Add(textViewMargin);
 
             contextMenu = new Menu();
@@ -430,6 +434,11 @@ namespace XwtPlus.TextEditor
         protected override void OnMouseMoved(MouseMovedEventArgs args)
         {
             base.OnMouseMoved(args);
+
+            if (args.X >= textViewMargin.XOffset)
+                this.Cursor = CursorType.IBeam;
+            else
+                this.Cursor = CursorType.Arrow;
 
             NotifyTrackers(args.X, args.Y);
         }
