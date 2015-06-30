@@ -176,6 +176,9 @@ namespace XwtPlus.TextEditor
 
         private void Cut()
         {
+            if (editor.Selection.IsEmpty)
+                return;
+            
             Copy();
             editor.Document.Remove(editor.Selection);
             Deselect();
@@ -183,12 +186,91 @@ namespace XwtPlus.TextEditor
 
         private void Copy()
         {
-            Clipboard.SetText(editor.Document.GetTextAt(editor.Selection.GetRegion(editor.Document)));
+            if (!editor.Selection.IsEmpty)
+                Clipboard.SetText(editor.Document.GetTextAt(editor.Selection.GetRegion(editor.Document)));
         }
 
         private void Paste()
         {
-            InsertText(Clipboard.GetText());
+            if(!string.IsNullOrEmpty(Clipboard.GetText()))
+                InsertText(Clipboard.GetText());
+        }
+
+        private void MoveCursorUp()
+        {
+            if (editor.Caret.Line > 1)
+                editor.Caret.Line--;
+            Deselect();
+        }
+
+        private void MoveCursorDown()
+        {
+            if(editor.Caret.Line < editor.Document.LineCount)
+                editor.Caret.Line++;
+            Deselect();
+        }
+
+        private void MoveCursorLeft()
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                if (editor.Caret.Column == 1)
+                {
+                    if (editor.Caret.Line == 1)
+                        return;
+
+                    var line = editor.Document.GetLine(editor.Caret.Line - 1);
+                    editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
+                }
+                else
+                    editor.Caret.Column--;
+            }
+            else
+                editor.Caret.Offset = editor.Selection.Offset;
+            Deselect();
+        }
+
+        private void MoveCursorRight()
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                var line = editor.Document.GetLine(editor.Caret.Line);
+                if (editor.Caret.Column > line.Length)
+                {
+                    editor.Caret.Column = 1;
+                    editor.Caret.Line++;
+                }
+                else
+                    editor.Caret.Column++;
+            }
+            else
+                editor.Caret.Offset = editor.Selection.EndOffset;
+            Deselect();
+        }
+
+        private void DeleteText(bool back)
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                var line = editor.Document.GetLine(editor.Caret.Line);
+
+                if (!back && editor.Caret.Line == editor.Document.LineCount && editor.Caret.Column > line.Length)
+                    return;
+
+                if (back && editor.Caret.Line == 1 && editor.Caret.Column == 1)
+                    return;
+
+                editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location) - Convert.ToInt32(back), 1);
+
+                if (back)
+                    MoveCursorLeft();
+            }
+            else
+            {
+                editor.Document.Remove(editor.Selection);
+                Deselect();
+            }
+            QueueDraw();
         }
 
         internal void HandleButtonPressed(object sender, ButtonEventArgs e)
@@ -213,19 +295,15 @@ namespace XwtPlus.TextEditor
                 {
                     case Key.x:
                     case Key.X:
-                        if(!editor.Selection.IsEmpty)
-                            Cut();
+                        Cut();
                         break;
                     case Key.c:
                     case Key.C:
-
-                        if(!editor.Selection.IsEmpty)
-                            Copy();
+                        Copy();
                         break;
                     case Key.v:
                     case Key.V:
-                        if(!string.IsNullOrEmpty(Clipboard.GetText()))
-                            Paste();
+                        Paste();
                         break;
                 }
             }
@@ -237,92 +315,23 @@ namespace XwtPlus.TextEditor
                     Deselect();
                     break;
                 case Key.Up:
-                    editor.Caret.Line--;
-                    Deselect();
+                    MoveCursorUp();
                     break;
                 case Key.Down:
-                    editor.Caret.Line++;
-                    Deselect();
+                    MoveCursorDown();
                     break;
                 case Key.Left:
-                    {
-                        if (editor.Selection.IsEmpty)
-                        {
-                            if (editor.Caret.Column == 1)
-                            {
-                                var line = editor.Document.GetLine(editor.Caret.Line - 1);
-                                editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
-                            }
-                            else
-                            {
-                                editor.Caret.Column--;
-                            }
-                        }
-                        else
-                        {
-                            editor.Caret.Offset = editor.Selection.Offset;
-                        }
-                        Deselect();
-                        break;
-                    }
+                    MoveCursorLeft();
+                    break;
                 case Key.Right:
-                    {
-                        if (editor.Selection.IsEmpty)
-                        {
-                            var line = editor.Document.GetLine(editor.Caret.Line);
-                            if (editor.Caret.Column > line.Length)
-                            {
-                                editor.Caret.Column = 1;
-                                editor.Caret.Line++;
-                            }
-                            else
-                            {
-                                editor.Caret.Column++;
-                            }
-                        }
-                        else
-                        {
-                            editor.Caret.Offset = editor.Selection.EndOffset;
-                        }
-                        Deselect();
-                        break;
-                    }
+                    MoveCursorRight();
+                    break;
                 case Key.Delete:
-                    {
-                        if (editor.Selection.IsEmpty)
-                            editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location), 1);
-                        else
-                        {
-                            editor.Document.Remove(editor.Selection);
-                            Deselect();
-                        }
-                        QueueDraw();
-                        break;
-                    }
+                    DeleteText(false);
+                    break;
                 case Key.BackSpace:
-                    {
-                        if (editor.Selection.IsEmpty)
-                        {
-                            editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location) - 1, 1);
-
-                            if (editor.Caret.Column == 1)
-                            {
-                                var line = editor.Document.GetLine(editor.Caret.Line - 1);
-                                editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
-                            }
-                            else
-                            {
-                                editor.Caret.Column--;
-                            }
-                        }
-                        else
-                        {
-                            editor.Document.Remove(editor.Selection);
-                            Deselect();
-                        }
-                        QueueDraw();
-                        break;
-                    }
+                    DeleteText(true);
+                    break;
                 case Key.Tab:
                     InsertText("\t");
                     break;

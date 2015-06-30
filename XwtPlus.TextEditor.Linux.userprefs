@@ -1,1 +1,14 @@
-﻿<Properties StartupItem="XwtPlus.TextEditor.Test/XwtPlus.TextEditor.Test.csproj" />
+﻿<Properties StartupItem="XwtPlus.TextEditor.Test/XwtPlus.TextEditor.Test.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="XwtPlus.TextEditor.Test/Program.cs">
+    <Files>
+      <File FileName="XwtPlus.TextEditor/TextEditor.cs" Line="1" Column="1" />
+      <File FileName="XwtPlus.TextEditor/TextArea.cs" Line="1" Column="1" />
+      <File FileName="XwtPlus.TextEditor.Test/Program.cs" Line="6" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
