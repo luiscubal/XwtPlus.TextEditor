@@ -104,7 +104,6 @@ namespace XwtPlus.TextEditor
             };
 
             CaretAnimation = new CaretAnimation();
-            Cursor = CursorType.IBeam;
             Caret = new Caret(this);
             Caret.Line = 1;
             Options = new TextEditorOptions();
