@@ -14,7 +14,7 @@ namespace XwtPlus.TextEditor
         const int StartOffset = 4;
 
         Menu contextMenu;
-        MenuItem cutMenuItem, copyMenuItem, pasteMenuItem;
+        MenuItem cutMenuItem, copyMenuItem, pasteMenuItem, selectallMenuItem;
         TextEditor editor;
 
         List<Margin> margins = new List<Margin>();
@@ -49,6 +49,12 @@ namespace XwtPlus.TextEditor
             pasteMenuItem = new MenuItem("Paste");
             pasteMenuItem.Clicked += (sender, e) => Paste();
             contextMenu.Items.Add(pasteMenuItem);
+
+            contextMenu.Items.Add(new SeparatorMenuItem());
+
+            selectallMenuItem = new MenuItem("Select All");
+            selectallMenuItem.Clicked += (sender, e) => SelectAll();
+            contextMenu.Items.Add(selectallMenuItem);
         }
 
         public double ComputedWidth
@@ -297,6 +303,10 @@ namespace XwtPlus.TextEditor
             {
                 switch (e.Key)
                 {
+                    case Key.a:
+                    case Key.A:
+                        SelectAll();
+                        break;
                     case Key.x:
                     case Key.X:
                         Cut();
@@ -348,6 +358,11 @@ namespace XwtPlus.TextEditor
             {
                 editor.ResetCaretState();
             }
+        }
+
+        void SelectAll()
+        {
+            editor.Selection = new TextSegment(0, editor.Document.TextLength);
         }
 
         void Deselect()
