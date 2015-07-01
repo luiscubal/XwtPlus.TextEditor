@@ -120,10 +120,14 @@ namespace XwtPlus.TextEditor
             {
                 QueueDraw();
             };
-
-            ButtonPressed += textArea.HandleButtonPressed;
+            
             KeyPressed += textArea.HandleKeyPressed;
             TextInput += textArea.HandleTextInput;
+        }
+
+        internal int GetWidgth()
+        {
+            return (int)textArea.ComputedWidth;
         }
 
         public bool CaretVisible

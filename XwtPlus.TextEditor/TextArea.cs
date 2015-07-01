@@ -55,6 +55,8 @@ namespace XwtPlus.TextEditor
             selectallMenuItem = new MenuItem("Select All");
             selectallMenuItem.Clicked += (sender, e) => SelectAll();
             contextMenu.Items.Add(selectallMenuItem);
+
+            ButtonPressed += HandleButtonPressed;
         }
 
         public double ComputedWidth
@@ -64,6 +66,9 @@ namespace XwtPlus.TextEditor
 
         protected override Size OnGetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
         {
+            this.WidthRequest = ComputedWidth;
+            this.HeightRequest = textViewMargin.LineHeight * (editor.Document.LineCount + 1);
+
             return new Size(ComputedWidth, textViewMargin.LineHeight * editor.Document.LineCount);
         }
 
