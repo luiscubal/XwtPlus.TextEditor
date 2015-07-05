@@ -2,9 +2,9 @@ using System;
 using Xwt;
 using XwtPlus.TextEditor;
 
-namespace XwtPlus.TextEditor.Test
+namespace Sample
 {
-	class MainWindow : Window
+	public class MainWindow : Window
 	{
 		TextEditor textEditor;
 

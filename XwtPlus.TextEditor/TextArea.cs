@@ -13,9 +13,13 @@ namespace XwtPlus.TextEditor
     {
         const int StartOffset = 4;
 
+        Menu contextMenu;
+        MenuItem cutMenuItem, copyMenuItem, pasteMenuItem, selectallMenuItem;
         TextEditor editor;
 
         List<Margin> margins = new List<Margin>();
+        LineNumberMargin lineNumberMargin;
+        PaddingMargin paddingMargin;
         TextViewMargin textViewMargin;
 
         public TextArea(TextEditor editor)
@@ -24,12 +28,35 @@ namespace XwtPlus.TextEditor
 
             CanGetFocus = true;
 
+            lineNumberMargin = new LineNumberMargin(editor);
+            paddingMargin = new PaddingMargin(5);
             textViewMargin = new TextViewMargin(editor);
 
-            margins.Add(new PaddingMargin(StartOffset));
-            margins.Add(new LineNumberMargin(editor));
-            margins.Add(new PaddingMargin(5));
+            margins.Add(lineNumberMargin);
+            margins.Add(paddingMargin);
             margins.Add(textViewMargin);
+
+            contextMenu = new Menu();
+
+            cutMenuItem = new MenuItem("Cut");
+            cutMenuItem.Clicked += (sender, e) => Cut();
+            contextMenu.Items.Add(cutMenuItem);
+
+            copyMenuItem = new MenuItem("Copy");
+            copyMenuItem.Clicked += (sender, e) => Copy();
+            contextMenu.Items.Add(copyMenuItem);
+
+            pasteMenuItem = new MenuItem("Paste");
+            pasteMenuItem.Clicked += (sender, e) => Paste();
+            contextMenu.Items.Add(pasteMenuItem);
+
+            contextMenu.Items.Add(new SeparatorMenuItem());
+
+            selectallMenuItem = new MenuItem("Select All");
+            selectallMenuItem.Clicked += (sender, e) => SelectAll();
+            contextMenu.Items.Add(selectallMenuItem);
+
+            ButtonPressed += HandleButtonPressed;
         }
 
         public double ComputedWidth
@@ -39,6 +66,13 @@ namespace XwtPlus.TextEditor
 
         protected override Size OnGetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
         {
+            //GTK 3 has some trouble setting correct sizes... this fixes it
+            if (Toolkit.CurrentEngine.Type == ToolkitType.Gtk3)
+            {
+                this.WidthRequest = ComputedWidth;
+                this.HeightRequest = textViewMargin.LineHeight * (editor.Document.LineCount + 1);
+            }
+
             return new Size(ComputedWidth, textViewMargin.LineHeight * editor.Document.LineCount);
         }
 
@@ -159,9 +193,144 @@ namespace XwtPlus.TextEditor
             editor.SetFocus();
         }
 
+        private void Cut()
+        {
+            if (editor.Selection.IsEmpty)
+                return;
+            
+            Copy();
+            editor.Document.Remove(editor.Selection);
+            Deselect();
+        }
+
+        private void Copy()
+        {
+            if (!editor.Selection.IsEmpty)
+                Clipboard.SetText(editor.Document.GetTextAt(editor.Selection.GetRegion(editor.Document)));
+        }
+
+        private void Paste()
+        {
+            if(!string.IsNullOrEmpty(Clipboard.GetText()))
+                InsertText(Clipboard.GetText());
+        }
+
+        private void MoveCursorUp()
+        {
+            if (editor.Caret.Line > 1)
+                editor.Caret.Line--;
+            Deselect();
+        }
+
+        private void MoveCursorDown()
+        {
+            if(editor.Caret.Line < editor.Document.LineCount)
+                editor.Caret.Line++;
+            Deselect();
+        }
+
+        private void MoveCursorLeft()
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                if (editor.Caret.Column == 1)
+                {
+                    if (editor.Caret.Line == 1)
+                        return;
+
+                    var line = editor.Document.GetLine(editor.Caret.Line - 1);
+                    editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
+                }
+                else
+                    editor.Caret.Column--;
+            }
+            else
+                editor.Caret.Offset = editor.Selection.Offset;
+            Deselect();
+        }
+
+        private void MoveCursorRight()
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                var line = editor.Document.GetLine(editor.Caret.Line);
+                if (editor.Caret.Column > line.Length)
+                {
+                    editor.Caret.Column = 1;
+                    editor.Caret.Line++;
+                }
+                else
+                    editor.Caret.Column++;
+            }
+            else
+                editor.Caret.Offset = editor.Selection.EndOffset;
+            Deselect();
+        }
+
+        private void DeleteText(bool back)
+        {
+            if (editor.Selection.IsEmpty)
+            {
+                var line = editor.Document.GetLine(editor.Caret.Line);
+
+                if (!back && editor.Caret.Line == editor.Document.LineCount && editor.Caret.Column > line.Length)
+                    return;
+
+                if (back && editor.Caret.Line == 1 && editor.Caret.Column == 1)
+                    return;
+
+                editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location) - Convert.ToInt32(back), 1);
+
+                if (back)
+                    MoveCursorLeft();
+            }
+            else
+            {
+                editor.Document.Remove(editor.Selection);
+                Deselect();
+            }
+            QueueDraw();
+        }
+
+        internal void HandleButtonPressed(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Right)
+            {
+                cutMenuItem.Sensitive = !editor.Selection.IsEmpty;
+                copyMenuItem.Sensitive = !editor.Selection.IsEmpty;
+                pasteMenuItem.Sensitive = !string.IsNullOrEmpty(Clipboard.GetText());
+
+                contextMenu.Popup();
+            }
+        }
+
         internal void HandleKeyPressed(object sender, KeyEventArgs e)
         {
             e.Handled = true;
+
+            if (e.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                switch (e.Key)
+                {
+                    case Key.a:
+                    case Key.A:
+                        SelectAll();
+                        break;
+                    case Key.x:
+                    case Key.X:
+                        Cut();
+                        break;
+                    case Key.c:
+                    case Key.C:
+                        Copy();
+                        break;
+                    case Key.v:
+                    case Key.V:
+                        Paste();
+                        break;
+                }
+            }
+
             switch (e.Key)
             {
                 case Key.Home:
@@ -169,68 +338,23 @@ namespace XwtPlus.TextEditor
                     Deselect();
                     break;
                 case Key.Up:
-                    editor.Caret.Line--;
-                    Deselect();
+                    MoveCursorUp();
                     break;
                 case Key.Down:
-                    editor.Caret.Line++;
-                    Deselect();
+                    MoveCursorDown();
                     break;
                 case Key.Left:
-                    {
-                        if (editor.Selection.IsEmpty)
-                        {
-                            if (editor.Caret.Column == 1)
-                            {
-                                var line = editor.Document.GetLine(editor.Caret.Line - 1);
-                                editor.Caret.Location = new DocumentLocation(editor.Caret.Line - 1, line.Length + 1);
-                            }
-                            else
-                            {
-                                editor.Caret.Column--;
-                            }
-                        }
-                        else
-                        {
-                            editor.Caret.Offset = editor.Selection.Offset;
-                        }
-                        Deselect();
-                        break;
-                    }
+                    MoveCursorLeft();
+                    break;
                 case Key.Right:
-                    {
-                        if (editor.Selection.IsEmpty)
-                        {
-                            var line = editor.Document.GetLine(editor.Caret.Line);
-                            if (editor.Caret.Column > line.Length)
-                            {
-                                editor.Caret.Column = 1;
-                                editor.Caret.Line++;
-                            }
-                            else
-                            {
-                                editor.Caret.Column++;
-                            }
-                        }
-                        else
-                        {
-                            editor.Caret.Offset = editor.Selection.EndOffset;
-                        }
-                        Deselect();
-                        break;
-                    }
+                    MoveCursorRight();
+                    break;
                 case Key.Delete:
-                    {
-                        if (editor.Selection.IsEmpty)
-                            editor.Document.Remove(editor.Document.GetOffset(editor.Caret.Location), 1);
-                        else
-                        {
-                            editor.Document.Remove(editor.Selection);
-                            Deselect();
-                        }
-                        QueueDraw();
-                        break;
-                    }
+                    DeleteText(false);
+                    break;
+                case Key.BackSpace:
+                    DeleteText(true);
+                    break;
                 case Key.Tab:
                     InsertText("\t");
                     break;
@@ -245,14 +369,19 @@ namespace XwtPlus.TextEditor
             }
         }
 
+        void SelectAll()
+        {
+            editor.Selection = new TextSegment(0, editor.Document.TextLength);
+        }
+
         void Deselect()
         {
             editor.Selection = new TextSegment();
         }
 
-        internal void HandlePreviewTextInput(object sender, PreviewTextInputEventArgs args)
+        internal void HandleTextInput(object sender, TextInputEventArgs args)
         {
-            base.OnPreviewTextInput(args);
+            base.OnTextInput(args);
 
             InsertText(args.Text);
 
@@ -330,6 +459,11 @@ namespace XwtPlus.TextEditor
         {
             base.OnMouseMoved(args);
 
+            if (args.X >= lineNumberMargin.Width)
+                this.Cursor = CursorType.IBeam;
+            else
+                this.Cursor = CursorType.Arrow;
+
             NotifyTrackers(args.X, args.Y);
         }
 
@@ -345,9 +479,7 @@ namespace XwtPlus.TextEditor
         void NotifyTrackers(double x, double y)
         {
             foreach (var mouseMotionTracker in mouseMotionTrackers)
-            {
-                mouseMotionTracker.Item2(x, y);
-            }
+                mouseMotionTracker.Item2(Math.Max((int)x, textViewMargin.XOffset), Math.Max((int)y, 0));
         }
     }
 }

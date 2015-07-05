@@ -141,7 +141,7 @@ namespace XwtPlus.TextEditor.Margins
             if (lineNumber == editor.Caret.Line)
             {
                 cr.SetColor(editor.Options.ColorScheme.LineMarker.Color);
-                cr.Rectangle(x, y, editor.Size.Width, height);
+                cr.Rectangle(x, y, editor.GetWidth(), height);
                 cr.Fill();
             }
 
@@ -154,8 +154,14 @@ namespace XwtPlus.TextEditor.Margins
                 int logicalStartColumn = selectionSegment.Value.Offset - line.Offset;
                 int visualStartColumn = line.GetVisualColumn(editor, logicalStartColumn);
 
+                if (selectionSegment.Value.Offset == line.Offset)
+                    visualStartColumn = 0;
+
                 int logicalEndColumn = selectionSegment.Value.EndOffset - line.Offset;
                 int visualEndColumn = line.GetVisualColumn(editor, logicalEndColumn);
+
+                if (editor.Selection.EndOffset != selectionSegment.Value.EndOffset && visualEndColumn > 0)
+                    visualEndColumn--;
 
                 if (editor.Selection.Contains(line.EndOffset))
                     ++visualEndColumn;

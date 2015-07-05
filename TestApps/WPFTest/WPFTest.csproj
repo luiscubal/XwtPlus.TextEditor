@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{57F73AFE-845E-4252-83EB-F160A894E4C5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>WPFTest</RootNamespace>
+    <AssemblyName>WPFTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Xwt">
+      <HintPath>..\..\Third-Party\WPF\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.WPF">
+      <HintPath>..\..\Third-Party\WPF\Xwt.WPF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\XwtPlus.TextEditor\XwtPlus.TextEditor.csproj">
+      <Project>{FA8374B9-9E2A-40CE-9291-640419E64301}</Project>
+      <Name>XwtPlus.TextEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sample\Sample.csproj">
+      <Project>{BE6F8D2F-4173-4C48-AF73-9E69B12D649F}</Project>
+      <Name>Sample</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

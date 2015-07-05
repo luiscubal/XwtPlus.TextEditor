@@ -104,7 +104,6 @@ namespace XwtPlus.TextEditor
             };
 
             CaretAnimation = new CaretAnimation();
-            Cursor = CursorType.IBeam;
             Caret = new Caret(this);
             Caret.Line = 1;
             Options = new TextEditorOptions();
@@ -120,9 +119,14 @@ namespace XwtPlus.TextEditor
             {
                 QueueDraw();
             };
-
+            
             KeyPressed += textArea.HandleKeyPressed;
-            PreviewTextInput += textArea.HandlePreviewTextInput;
+            TextInput += textArea.HandleTextInput;
+        }
+
+        internal int GetWidth()
+        {
+            return (int)this.HorizontalScrollControl.UpperValue;
         }
 
         public bool CaretVisible
