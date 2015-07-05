@@ -141,7 +141,7 @@ namespace XwtPlus.TextEditor.Margins
             if (lineNumber == editor.Caret.Line)
             {
                 cr.SetColor(editor.Options.ColorScheme.LineMarker.Color);
-                cr.Rectangle(x, y, editor.GetWidgth(), height);
+                cr.Rectangle(x, y, editor.GetWidth(), height);
                 cr.Fill();
             }
 

@@ -66,8 +66,12 @@ namespace XwtPlus.TextEditor
 
         protected override Size OnGetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
         {
-            this.WidthRequest = ComputedWidth;
-            this.HeightRequest = textViewMargin.LineHeight * (editor.Document.LineCount + 1);
+            //GTK 3 has some trouble setting correct sizes... this fixes it
+            if (Toolkit.CurrentEngine.Type == ToolkitType.Gtk3)
+            {
+                this.WidthRequest = ComputedWidth;
+                this.HeightRequest = textViewMargin.LineHeight * (editor.Document.LineCount + 1);
+            }
 
             return new Size(ComputedWidth, textViewMargin.LineHeight * editor.Document.LineCount);
         }

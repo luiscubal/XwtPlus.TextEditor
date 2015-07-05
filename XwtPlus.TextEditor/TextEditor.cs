@@ -124,9 +124,9 @@ namespace XwtPlus.TextEditor
             TextInput += textArea.HandleTextInput;
         }
 
-        internal int GetWidgth()
+        internal int GetWidth()
         {
-            return (int)textArea.ComputedWidth;
+            return (int)this.HorizontalScrollControl.UpperValue;
         }
 
         public bool CaretVisible

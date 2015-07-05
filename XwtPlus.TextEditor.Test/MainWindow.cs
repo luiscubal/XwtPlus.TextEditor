@@ -6,7 +6,6 @@ namespace XwtPlus.TextEditor.Test
 {
 	class MainWindow : Window
 	{
-        ScrollView scrollView1;
 		TextEditor textEditor;
 
 		public MainWindow()
@@ -16,8 +15,7 @@ namespace XwtPlus.TextEditor.Test
 			Width = 500;
 			Height = 400;
 
-            scrollView1 = new ScrollView(textEditor = new TextEditor());
-            Content = scrollView1;
+            Content = textEditor = new TextEditor();
 			Padding = new WidgetSpacing();
 
 			Closed += (sender, e) => Application.Exit();
