@@ -126,6 +126,9 @@ namespace XwtPlus.TextEditor
 
         internal int GetWidth()
         {
+            if(Toolkit.CurrentEngine.Type == ToolkitType.Wpf)
+                return (int)textArea.ComputedWidth;
+            
             return (int)this.HorizontalScrollControl.UpperValue;
         }
 
